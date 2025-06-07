@@ -1,0 +1,43 @@
+services:
+  elprogresodb:
+    image: mysql:8
+    container_name: elprogresodb
+    environment:
+      MYSQL_DATABASE: 'bakery'
+      MYSQL_USER: 'master'
+      MYSQL_PASSWORD: 'master321'
+      MYSQL_ROOT_PASSWORD: 'master456'
+    ports:
+      - '127.0.0.1:3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - ./data:/var/lib/mysql
+    networks:
+      - introsoft-network
+
+
+  elprogresoapp:
+    image: quay.io/wildfly/wildfly:26.1.0.Final
+    container_name: elprogresoapp
+    ports:
+      - "8989:8080"
+      - "9990:9990"
+      - "8787:8787"
+    volumes:
+      - ./deployments:/opt/jboss/wildfly/standalone/deployments
+      - ./media:/opt/introsoft/media
+      - ./config/standalone.xml:/opt/jboss/wildfly/standalone/configuration/standalone.xml
+    environment:
+      - JAVA_OPTS=-Xms1024m -Xmx1024m -XX:MetaspaceSize=256M -XX:MaxMetaspaceSize=1024m -Djava.net.preferIPv4Stack=true  -agentlib:jdwp=transport=dt_socket,address=*:8787,server=y,suspend=n
+      - TZ=America/El_Salvador
+    #command: ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+    hostname: webapp
+    user: "${UID}:${GID}"
+    networks:
+      - introsoft-network
+
+networks:
+  introsoft-network:
+    name: introsoft-network
+    external: true
