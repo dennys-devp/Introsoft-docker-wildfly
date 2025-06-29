@@ -127,14 +127,25 @@
         <subsystem xmlns="urn:jboss:domain:datasources:7.0">
             <datasources>
                 <datasource jndi-name="java:/jdbc/IntrosoftDS" pool-name="MySQLPool" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:mysql://mysql:3306/mi_basedatos</connection-url>
+                    <connection-url>jdbc:mysql://micontainerdb:3306/mibase?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=America/El_Salvador</connection-url>
                     <driver>mysql</driver>
                     <security>
-                        <user-name>miusuario</user-name>
-                        <password>miclave</password>
+                        <user-name>miuser</user-name>
+                        <password>mipass</password>
                     </security>
+                    <validation>
+                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                        <validate-on-match>true</validate-on-match>
+                        <background-validation>false</background-validation>
+                    </validation>
+                    <pool>
+                        <min-pool-size>1</min-pool-size>
+                        <max-pool-size>10</max-pool-size>
+                        <prefill>false</prefill>
+                        <use-strict-min>false</use-strict-min>
+                        <flush-strategy>FailingConnectionOnly</flush-strategy>
+                    </pool>
                 </datasource>
-
                 <drivers>
                     <driver name="mysql" module="com.mysql">
                         <driver-class>com.mysql.cj.jdbc.Driver</driver-class>
